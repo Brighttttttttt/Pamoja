@@ -1,0 +1,14 @@
+name: verify-source-branch
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Only dev can merge into main
+        run: |
+          if [ "${{ github.head_ref }}" != "dev" ]; then
+            echo "Seule la branche dev peut être mergée dans main."
+            exit 1
+          fi
