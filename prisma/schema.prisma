@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  coach
+  athlete
+}
+
+enum InviteStatus {
+  pending
+  accepted
+  expired
+}
+
+enum SessionStatus {
+  planned
+  done
+  missed
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+
+  athleteProfile   AthleteProfile? @relation("UserAthleteProfile")
+  coachedAthletes  AthleteProfile[] @relation("CoachAthletes")
+  sentInvites      CoachInvite[]    @relation("CoachInvites")
+  createdSessions  PlannedSession[] @relation("CoachCreatedSessions")
+}
+
+model AthleteProfile {
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  user                   User      @relation("UserAthleteProfile", fields: [userId], references: [id])
+  coachId                String?
+  coach                  User?     @relation("CoachAthletes", fields: [coachId], references: [id])
+  goalName               String?
+  goalDate               DateTime?
+  goalDistanceKm         Float?
+  goalTargetTime         String?
+  stravaAthleteId        String?   @unique
+  stravaAccessToken      String?
+  stravaRefreshToken     String?
+  stravaTokenExpiresAt   DateTime?
+
+  activities       Activity[]
+  plannedSessions  PlannedSession[]
+}
+
+model CoachInvite {
+  id           String       @id @default(cuid())
+  coachId      String
+  coach        User         @relation("CoachInvites", fields: [coachId], references: [id])
+  athleteEmail String
+  status       InviteStatus @default(pending)
+  token        String       @unique
+  createdAt    DateTime     @default(now())
+}
+
+model Activity {
+  id                String   @id @default(cuid())
+  athleteProfileId  String
+  athleteProfile    AthleteProfile @relation(fields: [athleteProfileId], references: [id])
+  source            String
+  externalId        String
+  startDate         DateTime
+  distanceMeters     Float
+  movingTimeSeconds Int
+  avgPaceSecPerKm   Float?
+  avgHeartRate      Float?
+  elevationGainM    Float?
+  activityType      String
+  raw               Json?
+
+  plannedSession PlannedSession?
+
+  @@unique([source, externalId])
+}
+
+model PlannedSession {
+  id                String        @id @default(cuid())
+  athleteProfileId  String
+  athleteProfile    AthleteProfile @relation(fields: [athleteProfileId], references: [id])
+  createdByCoachId  String
+  createdByCoach    User          @relation("CoachCreatedSessions", fields: [createdByCoachId], references: [id])
+  date              DateTime
+  type              String
+  description       String?
+  status            SessionStatus @default(planned)
+  linkedActivityId  String?       @unique
+  linkedActivity    Activity?     @relation(fields: [linkedActivityId], references: [id])
+}
