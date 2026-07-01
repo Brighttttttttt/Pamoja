@@ -31,6 +31,8 @@ export default function RegisterPage() {
       return;
     }
 
+    const created = (await res.json()) as { role: "coach" | "athlete" };
+
     const signInResult = await signIn("credentials", {
       email,
       password,
@@ -44,7 +46,7 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push(role === "coach" ? "/coach/dashboard" : "/athlete/dashboard");
+    router.push(created.role === "coach" ? "/coach/dashboard" : "/athlete/dashboard");
   };
 
   return (
