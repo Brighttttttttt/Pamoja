@@ -19,15 +19,15 @@ SaaS de suivi course à pied reliant coachs et athlètes.
 
 Next.js (TypeScript) · PostgreSQL + Prisma · Auth.js · Strava API · Tailwind CSS · Vercel
 
-## Démarrage (à compléter une fois le projet scaffoldé)
+## Démarrage
 
 ```
-npm install
-cp .env.example .env       # renseigner DATABASE_URL, STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET, NEXTAUTH_SECRET
-npx prisma migrate dev
+npm install                # génère aussi le client Prisma (postinstall)
+cp .env.example .env       # renseigner DATABASE_URL, NEXTAUTH_SECRET, STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET, STRAVA_WEBHOOK_VERIFY_TOKEN
+npx prisma migrate dev     # nécessite une DATABASE_URL PostgreSQL valide
 npm run dev
 ```
 
 ## Statut
 
-Projet en phase de conception — voir `plan-mvp-1.md` pour l'avancement des phases.
+Phase 0 (setup) scaffoldée : Next.js (App Router, TypeScript, Tailwind), Prisma (schéma initial), Auth.js (Credentials : inscription/connexion par rôle). Voir `plan-mvp-1.md` pour l'avancement des phases suivantes.
