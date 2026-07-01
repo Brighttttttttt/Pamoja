@@ -59,15 +59,17 @@ Jamais de commit direct sur `dev` ou `main`.
 
 ### Branch protection `main`
 - Require pull request before merging
-- Require status checks to pass: `ci`, `verify-source-branch` (section 7.3)
+- Require status checks to pass: `build`, `check` (section 7.3)
 - Require branches to be up to date before merging
 - Do not allow bypassing the above settings (inclut les admins et toute automatisation IA)
 - Bloquer force push et suppression de branche
 
 ### Branch protection `dev`
 - Require pull request before merging
-- Require status checks to pass: `ci`
+- Require status checks to pass: `build`
 - Bloquer force push et suppression de branche
+
+⚠️ **Piège de nommage** : les "required status checks" GitHub se déclarent par **nom du job**, pas par nom du workflow. Le workflow `ci.yml` a un seul job nommé `build` → le check requis est `build`, pas `ci`. Le workflow `verify-source-branch.yml` a un job nommé `check` → le check requis est `check`, pas `verify-source-branch`. Si le nom du job change, mettre à jour la branch protection en conséquence (`gh api repos/:owner/:repo/branches/:branch/protection`).
 
 ### Check custom `verify-source-branch` (obligatoire pour toute PR vers `main`)
 
