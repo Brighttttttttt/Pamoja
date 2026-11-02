@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # Seule dev peut aller dans main : les mises à jour visent donc dev.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    target-branch: "dev"
